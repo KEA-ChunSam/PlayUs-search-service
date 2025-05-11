@@ -1,4 +1,4 @@
-package com.playus.search_service;
+package com.playus.searchservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
