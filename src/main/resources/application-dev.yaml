@@ -20,3 +20,15 @@ logging:
 
 slack:
   webhook-url: ${SLACK_WEBHOOK_URL}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health           # 애플리케이션 상태 확인
+          - prometheus       # 메트릭 데이터 노출
+
+  endpoint:
+    health:
+      show-details: never
