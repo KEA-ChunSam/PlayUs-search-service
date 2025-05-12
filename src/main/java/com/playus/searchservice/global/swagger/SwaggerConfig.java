@@ -1,4 +1,4 @@
-package com.playus.search_service.global.swagger;
+package com.playus.searchservice.global.swagger;
 
 import java.util.List;
 

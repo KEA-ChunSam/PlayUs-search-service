@@ -2,20 +2,21 @@ spring:
   application:
     name: search-service
 
-  datasource:
-    url: jdbc:mysql://localhost:3306/playus
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+  elasticsearch:
+    uris: ${SPRING_ELASTIC_SEARCH_URL}
 
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    database: mysql
-    properties:
-      hibernate:
-        format_sql: true
-        jdbc:
-          time_zone: Asia/Seoul
-        show_sql: true
+sentry:
+  dsn: ${SENTRY_REPOSITORY_DSN}
+  environment: ${SENTRY_ENVIRONMENT}
+  servername: ${SENTRY_SERVERNAME}
+  repository-uri: ${SENTRY_REPOSITORY_URI}
+
+logging:
+  config: classpath:logback-spring.xml
+
+slack:
+  webhook-url: ${SLACK_WEBHOOK_URL}
