@@ -5,8 +5,10 @@ import org.springframework.context.annotation.Configuration;
 
 import io.sentry.Sentry;
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile({"prod", "dev"})
 public class SentryConfig {
 
 	@Value("${sentry.dsn}")
