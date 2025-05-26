@@ -3,25 +3,23 @@ package com.playus.searchservice.domain.post.service;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
-import co.elastic.clients.elasticsearch._types.query_dsl.TermQuery;
+import com.playus.searchservice.domain.common.adapter.TrendingKeywordAdapter;
 import com.playus.searchservice.domain.common.feign.client.UserFeignClient;
-import com.playus.searchservice.domain.common.feign.response.PartyWriterInfoFeignResponse;
 import com.playus.searchservice.domain.post.document.PostDocument;
 import com.playus.searchservice.domain.post.dto.search.SearchRequest;
 import com.playus.searchservice.domain.post.dto.search.SearchResponse;
-import com.playus.searchservice.domain.post.vo.PostSearchResult;
+import com.playus.searchservice.domain.post.dto.trending.TrendingKeywordResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +28,7 @@ import java.util.stream.Collectors;
 public class PostSearchService {
 
     private final ElasticsearchOperations elasticsearchOperations;
+    private final TrendingKeywordAdapter trendingKeywordAdapter;
     private final UserFeignClient userFeignClient;
 
     public SearchResponse search(SearchRequest request) {
@@ -93,5 +92,21 @@ public class PostSearchService {
 //        return SearchResponse.of(resultList.size(), resultList);
 
         return null;
+    }
+
+    public List<TrendingKeywordResponse> getTrendingKeyword() {
+        Set<ZSetOperations.TypedTuple<String>> topKeywords =
+                trendingKeywordAdapter.getTop10Keywords();
+
+        if (topKeywords == null) {
+            return Collections.emptyList();
+        }
+
+        AtomicInteger rank = new AtomicInteger(1);
+        return topKeywords.stream()
+                .map(ZSetOperations.TypedTuple::getValue)
+                .filter(Objects::nonNull)
+                .map(keyword -> TrendingKeywordResponse.of(rank.getAndIncrement(), keyword))
+                .toList();
     }
 }
