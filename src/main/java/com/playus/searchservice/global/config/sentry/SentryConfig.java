@@ -1,4 +1,4 @@
-package com.playus.searchservice.global.sentry;
+package com.playus.searchservice.global.config.sentry;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
