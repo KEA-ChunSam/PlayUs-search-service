@@ -15,6 +15,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +35,7 @@ class PostSearchControllerTest extends ControllerTestSupport {
         given(postSearchService.search(any(SearchRequest.class))).willReturn(response);
 
         // when // then
-        mockMvc.perform(post("/search/posts")
+        mockMvc.perform(get("/search/posts")
                         .param("query", query)
                         .contentType(APPLICATION_JSON))
                 .andDo(print())
@@ -54,7 +55,7 @@ class PostSearchControllerTest extends ControllerTestSupport {
         // given
 
         // when // then
-        mockMvc.perform(post("/search/posts")
+        mockMvc.perform(get("/search/posts")
                         .param("query", emptyQuery)
                         .contentType(APPLICATION_JSON))
                 .andDo(print())
