@@ -1,6 +1,7 @@
 package com.playus.searchservice.domain.post.document;
 
 import com.playus.searchservice.domain.post.enums.TeamTag;
+import com.playus.searchservice.domain.post.vo.PostSearchResult;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-@Setting(settingPath = "/elasticsearch/post-settings.json")
+//@Setting(settingPath = "/elasticsearch/post-settings.json")
 @Document(indexName = "mysql-server.community_dev.post")
 public class PostDocument {
 
@@ -26,22 +27,31 @@ public class PostDocument {
     private String title;
 
     private String description;
+
+    @Field(name = "image_url")
     private String imageUrl;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Keyword, name = "tag")
     private TeamTag tag;
+
     private int view;
 
     @Field(type = FieldType.Boolean)
     private boolean activated;
+
+    @Field(name = "is_secret")
     private boolean isSecret;
 
-    @Field(type = FieldType.Long)
+    @Field(type = FieldType.Long, name = "writer_id")
     private Long writerId;
 
+    @Field(name = "twp_date")
     private LocalDate twpDate;
 
+    @Field(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Field(name = "updated_at")
     private LocalDateTime updatedAt;
 
     @Builder
@@ -60,5 +70,13 @@ public class PostDocument {
         this.updatedAt = updatedAt;
     }
 
-
+    public PostSearchResult toPostSearchResult() {
+        return PostSearchResult.builder()
+                .postId(id)
+                .writerId(writerId)
+                .title(title)
+                .thumbnailUrl(imageUrl)
+                .createdAt(createdAt)
+                .build();
+    }
 }
