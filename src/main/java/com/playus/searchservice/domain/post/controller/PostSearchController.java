@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,12 +22,13 @@ public class PostSearchController implements PostSearchControllerSpecification {
     private final PostSearchService postSearchService;
 
     @Override
-    @PostMapping("/posts")
+    @GetMapping("/posts")
     public ResponseEntity<SearchResponse> search(@Valid SearchRequest request) {
         SearchResponse response = postSearchService.search(request);
         return ResponseEntity.ok().body(response);
     }
 
+    @Override
     @GetMapping("/trending")
     public ResponseEntity<List<TrendingKeywordResponse>> getTrendingKeyword() {
         List<TrendingKeywordResponse> response = postSearchService.getTrendingKeyword();
