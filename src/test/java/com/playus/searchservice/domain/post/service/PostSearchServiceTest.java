@@ -61,7 +61,7 @@ class PostSearchServiceTest extends IntegrationTestSupport {
 
     @DisplayName("검색 기록이 없을 수 있다.")
     @Test
-    void getTrendingKeyword_EMPYT() {
+    void getTrendingKeyword_EMPTY() {
         // given
 
         // when
