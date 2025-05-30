@@ -60,7 +60,7 @@ public class PostSearchService {
 
         SearchHits<PostDocument> searchResult = elasticsearchOperations.search(nativeQuery, PostDocument.class);
 
-        increaeTrendingKeyword(query);
+        increaseTrendingKeyword(query);
 
         List<PostSearchResult> resultList = searchResult.getSearchHits().stream()
                 .map(result -> result.getContent().toPostSearchResult())
@@ -119,7 +119,7 @@ public class PostSearchService {
         filters.add(notSecretPostFilter);
     }
 
-    private void increaeTrendingKeyword(String query) {
+    private void increaseTrendingKeyword(String query) {
         if (trendingKeywordAdapter.existsKeyword(query)) {
             trendingKeywordAdapter.scoreKeyword(query);
         } else {
