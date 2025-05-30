@@ -1,12 +1,14 @@
-package com.playus.searchservice.global.sentry;
+package com.playus.searchservice.global.config.sentry;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import io.sentry.Sentry;
 import jakarta.annotation.PostConstruct;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile({"prod", "dev"})
 public class SentryConfig {
 
 	@Value("${sentry.dsn}")

@@ -1,0 +1,9 @@
+spring:
+  data:
+    elasticsearch:
+      repositories:
+        enabled: true
+
+logging:
+  level:
+    org.elasticsearch.client: TRACE
