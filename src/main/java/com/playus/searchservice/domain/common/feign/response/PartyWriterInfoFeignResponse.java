@@ -27,7 +27,7 @@ public record PartyWriterInfoFeignResponse(
                 .id(null)
                 .writerName(null)
                 .writerGender(null)
-                .writerAge(-1)
+                .writerAge(10)
                 .writerThumbnailUrl(null)
                 .build();
     }
