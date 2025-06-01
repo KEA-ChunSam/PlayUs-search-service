@@ -6,6 +6,7 @@ import com.playus.searchservice.domain.post.dto.trending.TrendingKeywordResponse
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,15 @@ public interface PostSearchControllerSpecification {
     @Operation(
             summary = "커뮤니티 글 검색",
             description = "커뮤니티 글을 검색합니다.",
-//            security = @SecurityRequirement(name = "Access"),
+            security = @SecurityRequirement(name = "Access"),
             parameters = {
+                    @Parameter(
+                            name = "Access",
+                            description = "JWT Access Token (쿠키)",
+                            in = ParameterIn.COOKIE,
+                            required = true,
+                            example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    ),
                     @Parameter(
                             name = "query",
                             description = "검색어",
@@ -37,8 +45,17 @@ public interface PostSearchControllerSpecification {
     @Tag(name = "Get", description = "커뮤니티 인기 검색어 조회 API")
     @Operation(
             summary = "커뮤니티 인기 검색어 조회",
-            description = "커뮤니티 인기 검색어를 조회합니다."
-//            security = @SecurityRequirement(name = "Access"),
+            description = "커뮤니티 인기 검색어를 조회합니다.",
+            security = @SecurityRequirement(name = "Access"),
+            parameters = {
+                    @Parameter(
+                            name = "Access",
+                            description = "JWT Access Token (쿠키)",
+                            in = ParameterIn.COOKIE,
+                            required = true,
+                            example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    )
+            }
     )
     ResponseEntity<List<TrendingKeywordResponse>> getTrendingKeyword();
 }
