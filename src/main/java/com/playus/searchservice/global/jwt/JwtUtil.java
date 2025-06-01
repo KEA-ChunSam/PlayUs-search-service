@@ -1,0 +1,65 @@
+package com.playus.searchservice.global.jwt;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.util.Date;
+
+@Component
+public class JwtUtil {
+
+    private final SecretKey key;
+
+    public JwtUtil(@Value("${spring.jwt.secret}") String secret) {
+        byte[] byteSecretKey = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(byteSecretKey);
+    }
+
+    public Boolean isExpired(String token) {
+        Date expiration = extractPayload(token).getExpiration();
+        return expiration.before(new Date());
+    }
+
+    public String getUserId(String token) {
+        return extractPayload(token).getSubject();
+    }
+
+    public String getRole(String token) {
+        return extractPayload(token).get("role", String.class);
+    }
+
+    public int getAge(String token) {
+        Claims claims = extractPayload(token);
+        return claims.get("age", Integer.class);
+    }
+
+    public String getGender(String token) {
+        return extractPayload(token).get("gender", String.class);
+    }
+
+    private Claims extractPayload(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public String getJti(String token) {
+        return extractPayload(token).getId();
+    }
+
+    public String getType(String token) {
+        return extractPayload(token).get("type", String.class);
+    }
+
+    public long getRemainingExpirationTime(String token) {
+        return extractPayload(token).getExpiration().getTime() - System.currentTimeMillis();
+    }
+}
