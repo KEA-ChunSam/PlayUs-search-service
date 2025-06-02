@@ -1,8 +1,6 @@
 package com.playus.searchservice.global.config.security;
 
-import com.playus.searchservice.domain.common.feign.client.UserFeignClient;
 import com.playus.searchservice.global.jwt.JwtFilter;
-import com.playus.searchservice.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +23,8 @@ public class SecurityConfig {
     private String [] getWhiteList() {
         return new String[] {
                 "/error",
-                "/health",
-                "/actuator",
+                "/health/**",
+                "/actuator/**",
                 "/swagger",
                 "/swagger-ui.html",
                 "/swagger-ui/**",
