@@ -6,12 +6,18 @@ import com.playus.searchservice.domain.post.dto.trending.TrendingKeywordResponse
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 
 public interface PostSearchControllerSpecification {
@@ -38,6 +44,49 @@ public interface PostSearchControllerSpecification {
                     )
             }
     )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "검색 성공",
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "검색 응답 예시",
+                                    value = """
+                                            {
+                                                 "resultSize": 1,
+                                                 "searchResultList": [
+                                                     {
+                                                         "postId": 71,
+                                                         "writerId": 2,
+                                                         "writerName": null,
+                                                         "title": "LG가 좋아요",
+                                                         "thumbnailUrl": "post.jpg",
+                                                         "teamTag": "DOOSAN_BEARS",
+                                                         "createdAt": "11:42"
+                                                     }
+                                                 ]
+                                             }
+                                            """
+                            )
+                    )
+            ),
+
+            @ApiResponse(
+                    responseCode = "400", description = "검색 시도 시 검색어가 비어 있을 때 발생",
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    value = """
+                                            {
+                                              "code": 400,
+                                              "status": "BAD_REQUEST",
+                                              "message": "검색어는 필수입니다!"
+                                            }
+                                            """
+                            )
+                    )
+            )
+    })
     ResponseEntity<SearchResponse> search(@Valid @Parameter(hidden = true, description = "검색어")
                                           SearchRequest request);
 
@@ -57,5 +106,60 @@ public interface PostSearchControllerSpecification {
                     )
             }
     )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "인기 검색어 조회 성공",
+                    content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            examples = @ExampleObject(
+                                    name = "인기 검색어 응답 예시",
+                                    value = """
+                                            [
+                                                  {
+                                                      "rank": 1,
+                                                      "keyword": "LG"
+                                                  },
+                                                  {
+                                                      "rank": 2,
+                                                      "keyword": "NC"
+                                                  },
+                                                  {
+                                                      "rank": 3,
+                                                      "keyword": "NC가"
+                                                  },
+                                                  {
+                                                      "rank": 4,
+                                                      "keyword": "삼성"
+                                                  },
+                                                  {
+                                                      "rank": 5,
+                                                      "keyword": "사과"
+                                                  },
+                                                  {
+                                                      "rank": 6,
+                                                      "keyword": "lg"
+                                                  },
+                                                  {
+                                                      "rank": 7,
+                                                      "keyword": "테스트"
+                                                  },
+                                                  {
+                                                      "rank": 8,
+                                                      "keyword": "test"
+                                                  },
+                                                  {
+                                                      "rank": 9,
+                                                      "keyword": "nc"
+                                                  },
+                                                  {
+                                                      "rank": 10,
+                                                      "keyword": "text"
+                                                  }
+                                              ]
+                                            """
+                            )
+                    )
+            )
+    })
     ResponseEntity<List<TrendingKeywordResponse>> getTrendingKeyword();
 }
