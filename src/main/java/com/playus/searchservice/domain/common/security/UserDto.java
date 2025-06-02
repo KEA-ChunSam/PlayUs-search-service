@@ -1,0 +1,60 @@
+package com.playus.searchservice.domain.common.security;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+@NoArgsConstructor
+@Getter
+public class UserDto {
+
+    private Long id;
+    private String nickname;
+    private LocalDate birth;
+    private Gender gender;
+    private Role role;
+    private AuthProvider authProvider;
+    private boolean activated;
+    private String thumbnailURL;
+    private Float userScore;
+    private LocalDateTime blockOff;
+    private LocalDateTime createdAt;
+    private int age;
+
+    public UserDto(User user) {
+        this.id = user.getId();
+        this.nickname = user.getNickname();
+        this.birth = user.getBirth();
+        this.gender = user.getGender();
+        this.role = user.getRole();
+        this.authProvider = user.getAuthProvider();
+        this.activated = user.isActivated();
+        this.thumbnailURL = user.getThumbnailURL();
+        this.userScore = user.getUserScore();
+        this.blockOff = user.getBlockOff();
+        this.createdAt = user.getCreatedAt();
+    }
+
+    //JWT필터에서 사용
+    public static UserDto fromJwt(Long id, Role role, int age ,Gender gender) {
+        UserDto dto = new UserDto();
+        dto.id = id;
+        dto.role = role;
+        dto.age = age;
+        dto.gender = gender;
+        return dto;
+    }
+
+    public static UserDto createForTest(Long id, String nickname, Gender gender, Role role, String thumbnailURL, int age) {
+        UserDto dto = new UserDto();
+        dto.id = id;
+        dto.nickname = nickname;
+        dto.gender = gender;
+        dto.role = role;
+        dto.thumbnailURL = thumbnailURL;
+        dto.age = age;
+        return dto;
+    }
+}

@@ -13,6 +13,10 @@ spring:
 
   elasticsearch:
     uris: ${SPRING_ELASTIC_SEARCH_URL}
+    index : ${SPRING_ELASTIC_SEARCH_INDEX}
+
+  jwt:
+    secret: ${JWT_SECRET}
 
 sentry:
   dsn: ${SENTRY_REPOSITORY_DSN}

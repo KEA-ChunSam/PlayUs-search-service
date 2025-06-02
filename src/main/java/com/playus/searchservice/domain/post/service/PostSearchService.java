@@ -39,7 +39,7 @@ public class PostSearchService {
         String query = request.query();
 
         Query titleMatchQuery = MatchQuery.of(m -> m
-                        .query(request.query())
+                        .query(query)
                         .field("title")
                         .fuzziness("AUTO"))
                 ._toQuery();

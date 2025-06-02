@@ -4,6 +4,9 @@ spring:
       repositories:
         enabled: true
 
+  jwt:
+    secret: "secretkeysecretkeysecretkeysecretkeysecretkeysecretkeysecretkey"
+
 logging:
   level:
     org.elasticsearch.client: TRACE
