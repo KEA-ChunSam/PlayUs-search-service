@@ -5,6 +5,7 @@ import com.playus.searchservice.domain.common.security.CustomOAuth2User;
 import com.playus.searchservice.domain.common.security.Role;
 import com.playus.searchservice.domain.post.dto.search.SearchRequest;
 import com.playus.searchservice.domain.post.dto.search.SearchResponse;
+import com.playus.searchservice.domain.post.enums.TeamTag;
 import com.playus.searchservice.domain.post.vo.PostSearchResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,7 @@ class PostSearchControllerTest extends ControllerTestSupport {
         // given
         String query = "테스트";
         List<PostSearchResult> searchResultList = List.of(
-                PostSearchResult.of(1L, "kim", "title", "http://thumbnailUrl", LocalDateTime.of(2025, 5, 25, 10, 0, 0))
+                PostSearchResult.of(1L, "kim", "title", "http://thumbnailUrl", TeamTag.DOOSAN_BEARS, LocalDateTime.of(2025, 5, 25, 10, 0, 0))
         );
         SearchResponse response = SearchResponse.of(1, searchResultList);
         given(postSearchService.search(any(SearchRequest.class))).willReturn(response);
@@ -71,6 +72,7 @@ class PostSearchControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.searchResultList[0].writerName").value("kim"))
                 .andExpect(jsonPath("$.searchResultList[0].title").value("title"))
                 .andExpect(jsonPath("$.searchResultList[0].thumbnailUrl").value("http://thumbnailUrl"))
+                .andExpect(jsonPath("$.searchResultList[0].teamTag").value("DOOSAN_BEARS"))
                 .andExpect(jsonPath("$.searchResultList[0].createdAt").value("10:00"));
     }
 
