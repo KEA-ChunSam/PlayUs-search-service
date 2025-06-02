@@ -74,6 +74,7 @@ public class PostDocument {
                 .writerId(writerId)
                 .title(title)
                 .thumbnailUrl(imageUrl)
+                .teamTag(tag)
                 .createdAt(createdAt)
                 .build();
     }
