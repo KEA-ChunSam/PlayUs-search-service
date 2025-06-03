@@ -1,3 +1,10 @@
+server:
+  forward-headers-strategy: framework  # ALB HTTPS 헤더 인식
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+
 spring:
   application:
     name: search-service
@@ -10,13 +17,35 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+      timeout: 5s
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 10
+          min-idle: 2
 
   elasticsearch:
     uris: ${SPRING_ELASTIC_SEARCH_URL}
-    index : ${SPRING_ELASTIC_SEARCH_INDEX}
+    index: ${SPRING_ELASTIC_SEARCH_INDEX}
+    # Elasticsearch 연결 최적화
+    connection-timeout: 30s
+    socket-timeout: 60s
 
   jwt:
     secret: ${JWT_SECRET}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health           # 애플리케이션 상태 확인
+          - info             # 애플리케이션 정보
+          - prometheus       # 메트릭 데이터 노출
+
+  endpoint:
+    health:
+      show-details: never
 
 sentry:
   dsn: ${SENTRY_REPOSITORY_DSN}
@@ -26,6 +55,9 @@ sentry:
 
 logging:
   config: classpath:logback-spring.xml
+
+slack:
+  webhook-url: ${SLACK_WEBHOOK_URL}
 
 feign:
   user:
@@ -45,23 +77,24 @@ resilience4j:
         minimum-number-of-calls: 10
         wait-duration-in-open-state: 10s
     instances:
-      circuit:
+      elasticsearch:
+        base-config: default
+      user-service:
         base-config: default
 
-slack:
-  webhook-url: ${SLACK_WEBHOOK_URL}
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include:
-          - health           # 애플리케이션 상태 확인
-          - info             # 애플리케이션 정보
-          - prometheus       # 메트릭 데이터 노출
-
-  endpoint:
-    health:
-      show-details: always
-
-
+  # 검색 서비스 Retry 설정
+  retry:
+    configs:
+      default:
+        max-attempts: 3
+        wait-duration: 1s
+        retry-exceptions:
+          - java.net.SocketTimeoutException
+          - java.net.ConnectException
+          - org.elasticsearch.client.ResponseException
+          - feign.FeignException
+    instances:
+      elasticsearch:
+        base-config: default
+      user-service:
+        base-config: default
