@@ -37,6 +37,7 @@ dependencies {
 	// DB
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.apache.commons:commons-pool2'
 
 	// MSA
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
