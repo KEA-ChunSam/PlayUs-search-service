@@ -21,35 +21,36 @@ import java.time.Duration;
 @Profile({"dev", "prod"})  // dev, prod 환경에서만 사용
 public class RedisStandaloneConfig {
 
-    @Value("${spring.redis.host}")  // spring.data.redis.host → spring.redis.host로 변경
+    @Value("${spring.data.redis.host}")
     private String host;
 
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     private int port;
 
-    @Value("${spring.redis.timeout:5s}")
+    @Value("${spring.data.redis.timeout:5s}")
     private Duration timeout;
 
-    // 쿠버네티스 환경용 연결 풀 설정
-    @Value("${spring.redis.lettuce.pool.max-active:10}")
+    // 연결 풀 설정도 spring.data.redis 경로로 통일
+    @Value("${spring.data.redis.lettuce.pool.max-active:10}")
     private int maxActive;
 
-    @Value("${spring.redis.lettuce.pool.max-idle:10}")
+    @Value("${spring.data.redis.lettuce.pool.max-idle:10}")
     private int maxIdle;
 
-    @Value("${spring.redis.lettuce.pool.min-idle:2}")
+    @Value("${spring.data.redis.lettuce.pool.min-idle:2}")
     private int minIdle;
 
-    @Value("${spring.redis.lettuce.pool.max-wait:3s}")
+    @Value("${spring.data.redis.lettuce.pool.max-wait:3s}")
     private Duration maxWait;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
+        // 쿠버네티스 환경 단독 Redis 서버 설정
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
         redisConfig.setHostName(host);
         redisConfig.setPort(port);
 
-        // 연결 풀 설정 추가
+        // 연결 풀 설정
         GenericObjectPoolConfig<Object> poolConfig = new GenericObjectPoolConfig<>();
         poolConfig.setMaxTotal(maxActive);
         poolConfig.setMaxIdle(maxIdle);
@@ -57,11 +58,13 @@ public class RedisStandaloneConfig {
         poolConfig.setMaxWait(maxWait);
         poolConfig.setTestOnBorrow(true);
         poolConfig.setTestWhileIdle(true);
+        poolConfig.setTimeBetweenEvictionRuns(Duration.ofSeconds(30));
 
         // 쿠버네티스 네트워크 최적화
         SocketOptions socketOptions = SocketOptions.builder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .keepAlive(true)
+                .tcpNoDelay(true)
                 .build();
 
         ClientOptions clientOptions = ClientOptions.builder()
@@ -69,7 +72,7 @@ public class RedisStandaloneConfig {
                 .autoReconnect(true)
                 .build();
 
-        // Lettuce 설정을 풀링으로 업그레이드
+        // Lettuce 풀링 설정
         LettuceClientConfiguration clientConfig = LettucePoolingClientConfiguration.builder()
                 .poolConfig(poolConfig)
                 .clientOptions(clientOptions)
@@ -81,14 +84,11 @@ public class RedisStandaloneConfig {
 
     @Bean(name = "trendingKeywordRedisTemplate")
     public RedisTemplate<String, String> trendingKeywordRedisTemplate() {
-        // 기존 설정 유지하면서 안정성만 추가
         RedisTemplate<String, String> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory());
 
         template.setKeySerializer(new StringRedisSerializer());
         template.setValueSerializer(new StringRedisSerializer());
-
-        // 추가 안정성 설정
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(new StringRedisSerializer());
         template.setDefaultSerializer(new StringRedisSerializer());

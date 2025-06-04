@@ -10,10 +10,9 @@ spring:
       repositories:
         enabled: true
 
-    # 환경변수 사용하도록 수정
     redis:
-      host: ${REDIS_HOST}                 # dev-redis-rank.dev-search-service.svc.cluster.local
-      port: ${REDIS_PORT}                 # 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
       timeout: 5s
       lettuce:
         pool:
@@ -42,7 +41,7 @@ management:
 
   endpoint:
     health:
-      show-details: always
+      show-details: never
 
 sentry:
   dsn: ${SENTRY_REPOSITORY_DSN}
@@ -97,7 +96,7 @@ resilience4j:
           - java.net.ConnectException
           - feign.FeignException
       elasticsearch-config:
-        max-attempts: 2   # 빠른 응답 위해 2번만
+        max-attempts: 2
         wait-duration: 500ms
         retry-exceptions:
           - java.net.SocketTimeoutException
@@ -118,7 +117,7 @@ resilience4j:
         max-wait-duration: 3s
     instances:
       elasticsearch:
-        max-concurrent-calls: 15        # ES 동시 검색 제한
+        max-concurrent-calls: 15
       user-service:
         max-concurrent-calls: 10
 
