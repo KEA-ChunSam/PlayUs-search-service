@@ -10,3 +10,7 @@ spring:
 logging:
   level:
     org.elasticsearch.client: TRACE
+
+feign:
+  user:
+    url: http://test-dummy
