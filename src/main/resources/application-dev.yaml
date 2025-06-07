@@ -37,6 +37,11 @@ sentry:
 
 logging:
   config: classpath:logback-spring.xml
+  level:
+    root: info
+    ads.client: debug
+    com.client.external: debug
+    com.playus.searchservice.domain.common.feign.client: DEBUG
 
 feign:
   user:
